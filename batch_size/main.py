@@ -10,7 +10,7 @@ import torch.nn as nn
 import pickle
 import os
 
-from gradient_descent_the_ultimate_optimizer import gdtuo
+#from gradient_descent_the_ultimate_optimizer import gdtuo
 
 from functions import *
 from models import *
@@ -21,10 +21,10 @@ from models import *
 
 # Batch sizes
 batch_size_min = 5 # 2**x
-batch_size_max = 10 # 2**x
+batch_size_max = 5 # 2**x
 
 # Target accuracy
-target_acc = 0.97
+target_acc = 0.80
 
 # Number of epochs
 epoch = 4000
@@ -84,18 +84,18 @@ if dataset_name == "MNIST":
 mean_steps = [0] * len(batch_sizes)
 
 if hyperoptimization:
-    for i in range(iter):
+    for i in range(n_iter):
         steps = training_hyperopt(model, train_dataset, test_dataset, optimizer_name, lr, batch_sizes, target_acc, epoch, loss_fn, device)
         mean_steps = [x + y for x, y in zip(mean_steps, steps)]
-    mean_steps = [x / iter for x in mean_steps]
+    mean_steps = [x / n_iter for x in mean_steps]
 else:
-    for i in range(iter):
+    for i in range(n_iter):
         steps = training(model, train_dataset, test_dataset, optimizer, batch_sizes, target_acc, epoch, loss_fn, device)
         mean_steps = [x + y for x, y in zip(mean_steps, steps)]
-    mean_steps = [x / iter for x in mean_steps]
+    mean_steps = [x / n_iter for x in mean_steps]
 
 # Save the results
-name_file = "batch_size/results/" + model_name + "_" + optimizer_name + "_" + dataset_name + "_" + loss_fn_name + "_" + lr + "_" + str(hyperoptimization) +  "_" + str(batch_size_min) + "_" + str(batch_size_max) + "_" + str(target_acc)
+name_file = "batch_size/results/" + model_name + "_" + optimizer_name + "_" + dataset_name + "_" + loss_fn_name + "_" + str(lr) + "_" + str(hyperoptimization) +  "_" + str(batch_size_min) + "_" + str(batch_size_max) + "_" + str(target_acc)
 
 nb_file = 0
 for file in os.listdir("batch_size/results/"):

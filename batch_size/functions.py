@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import copy
-from gradient_descent_the_ultimate_optimizer import gdtuo
+#from gradient_descent_the_ultimate_optimizer import gdtuo
 
 ######################################################################
 ############################ FUNCTIONS ###############################
