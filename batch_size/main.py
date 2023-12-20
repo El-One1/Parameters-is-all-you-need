@@ -38,6 +38,9 @@ optimizer_name = "SGD" # ["SGD", "Adam", "RMSprop"]
 # Learning rate
 lr = 0.1
 
+# Momentum
+momentum = 0.0
+
 # Dataset
 dataset_name = "MNIST" # ["MNIST", "CIFAR10"]
 
@@ -66,7 +69,7 @@ if model_name == "MNIST_MLP":
 # Initialize the optimizer
 if not(hyperoptimization):
     if optimizer_name == "SGD":
-        optimizer = torch.optim.SGD(model.parameters(), lr=lr)
+        optimizer = torch.optim.SGD(model.parameters(), lr=lr, momentum=momentum)
 
 # Initialize the loss function
 if loss_fn_name == "CrossEntropyLoss":
@@ -85,7 +88,7 @@ mean_steps = [0] * len(batch_sizes)
 
 if hyperoptimization:
     for i in range(n_iter):
-        steps = training_hyperopt(model, train_dataset, test_dataset, optimizer_name, lr, batch_sizes, target_acc, epoch, loss_fn, device)
+        steps = training_hyperopt(model, train_dataset, test_dataset, optimizer_name, lr, momentum, batch_sizes, target_acc, epoch, loss_fn, device)
         mean_steps = [x + y for x, y in zip(mean_steps, steps)]
     mean_steps = [x / n_iter for x in mean_steps]
 else:
@@ -95,7 +98,7 @@ else:
     mean_steps = [x / n_iter for x in mean_steps]
 
 # Save the results
-name_file = "batch_size/results/" + model_name + "_" + optimizer_name + "_" + dataset_name + "_" + loss_fn_name + "_" + str(lr) + "_" + str(hyperoptimization) +  "_" + str(batch_size_min) + "_" + str(batch_size_max) + "_" + str(target_acc)
+name_file = "batch_size/results/" + model_name + "_" + optimizer_name + "_" + dataset_name + "_" + loss_fn_name + "_" + str(lr) + "_" + str(momentum) + "_" + str(hyperoptimization) +  "_" + str(batch_size_min) + "_" + str(batch_size_max) + "_" + str(target_acc)
 
 nb_file = 0
 for file in os.listdir("batch_size/results/"):

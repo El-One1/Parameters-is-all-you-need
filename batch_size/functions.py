@@ -99,7 +99,7 @@ def validation_hyperopt(model, data_loader, device):
     
 ################# TRAINING #################
     
-def training_hyperopt(model, train_dataset, test_dataset, optimizer_name, lr, batch_sizes, target_acc, epoch, loss_fn, device, lr_hypopt=10e-5):
+def training_hyperopt(model, train_dataset, test_dataset, optimizer_name, lr, momentum, batch_sizes, target_acc, epoch, loss_fn, device, lr_hypopt=10e-5):
     steps = []
     # Train the model for different batch sizes
     for batch_size in batch_sizes:
@@ -108,7 +108,7 @@ def training_hyperopt(model, train_dataset, test_dataset, optimizer_name, lr, ba
         # Reset weights of the model
         model.reset_weights()
         if optimizer_name == "SGD":
-            optim = gdtuo.SGD(alpha = lr, optimizer=gdtuo.SGD(lr_hypopt))
+            optim = gdtuo.SGD(alpha = lr, momentum=momentum, optimizer=gdtuo.SGD(lr_hypopt))
         mw = gdtuo.ModuleWrapper(model, optimizer=optim)
         N = len(train_loader.dataset)
         # Value to know if we must change the batch size
