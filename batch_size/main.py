@@ -10,7 +10,7 @@ import torch.nn as nn
 import pickle
 import os
 
-#from gradient_descent_the_ultimate_optimizer import gdtuo
+from gradient_descent_the_ultimate_optimizer import gdtuo
 
 from functions import *
 from models import *
@@ -21,10 +21,10 @@ from models import *
 
 # Batch sizes
 batch_size_min = 5 # 2**x
-batch_size_max = 5 # 2**x
+batch_size_max = 11 # 2**x
 
 # Target accuracy
-target_acc = 0.80
+target_acc = 0.97
 
 # Number of epochs
 epoch = 4000
@@ -48,13 +48,14 @@ dataset_name = "MNIST" # ["MNIST", "CIFAR10"]
 loss_fn_name = "CrossEntropyLoss" # ["CrossEntropyLoss", "NLLLoss"]
 
 # Device
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device_nb = 0
+device = torch.device("cuda:"+str(device_nb) if torch.cuda.is_available() else "cpu")
 
 # Normal or hyperoptimization
-hyperoptimization = 0 # [0, 1]
+hyperoptimization = 1 # [0, 1]
 
 # Number of iterations
-n_iter = 1
+n_iter = 10
 
 ####################### MAIN #######################
 
@@ -88,20 +89,20 @@ mean_steps = [0] * len(batch_sizes)
 
 if hyperoptimization:
     for i in range(n_iter):
-        steps = training_hyperopt(model, train_dataset, test_dataset, optimizer_name, lr, momentum, batch_sizes, target_acc, epoch, loss_fn, device)
+        steps = training_hyperopt(model, train_dataset, valid_dataset, optimizer_name, lr, momentum, batch_sizes, target_acc, epoch, loss_fn, device)
         mean_steps = [x + y for x, y in zip(mean_steps, steps)]
     mean_steps = [x / n_iter for x in mean_steps]
 else:
     for i in range(n_iter):
-        steps = training(model, train_dataset, test_dataset, optimizer, batch_sizes, target_acc, epoch, loss_fn, device)
+        steps = training(model, train_dataset, valid_dataset, optimizer, batch_sizes, target_acc, epoch, loss_fn, device)
         mean_steps = [x + y for x, y in zip(mean_steps, steps)]
     mean_steps = [x / n_iter for x in mean_steps]
 
 # Save the results
-name_file = "batch_size/results/" + model_name + "_" + optimizer_name + "_" + dataset_name + "_" + loss_fn_name + "_" + str(lr) + "_" + str(momentum) + "_" + str(hyperoptimization) +  "_" + str(batch_size_min) + "_" + str(batch_size_max) + "_" + str(target_acc)
+name_file = "results/" + model_name + "_" + optimizer_name + "_" + dataset_name + "_" + loss_fn_name + "_" + str(lr) + "_" + str(momentum) + "_" + str(hyperoptimization) +  "_" + str(batch_size_min) + "_" + str(batch_size_max) + "_" + str(target_acc)
 
 nb_file = 0
-for file in os.listdir("batch_size/results/"):
+for file in os.listdir("results/"):
     if name_file in file:
         nb_file += 1
 

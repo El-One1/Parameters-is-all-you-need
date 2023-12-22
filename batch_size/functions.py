@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import copy
-#from gradient_descent_the_ultimate_optimizer import gdtuo
+from gradient_descent_the_ultimate_optimizer import gdtuo
 
 ######################################################################
 ############################ FUNCTIONS ###############################
@@ -108,7 +108,8 @@ def training_hyperopt(model, train_dataset, test_dataset, optimizer_name, lr, mo
         # Reset weights of the model
         model.reset_weights()
         if optimizer_name == "SGD":
-            optim = gdtuo.SGD(alpha = lr, momentum=momentum, optimizer=gdtuo.SGD(lr_hypopt))
+            if momentum==0.0:
+                optim = gdtuo.SGD(alpha = lr, optimizer=gdtuo.SGD(lr_hypopt))
         mw = gdtuo.ModuleWrapper(model, optimizer=optim)
         N = len(train_loader.dataset)
         # Value to know if we must change the batch size
