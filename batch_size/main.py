@@ -50,7 +50,7 @@ dataset_name = "MNIST" # ["MNIST", "CIFAR10"]
 loss_fn_name = "CrossEntropyLoss" # ["CrossEntropyLoss", "NLLLoss"]
 
 # Device
-device_nb = 1
+device_nb = 0
 device = torch.device("cuda:"+str(device_nb) if torch.cuda.is_available() else "cpu")
 
 # Normal or hyperoptimization
