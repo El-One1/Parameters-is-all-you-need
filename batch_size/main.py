@@ -21,7 +21,7 @@ from models import *
 
 # Batch sizes
 batch_size_min = 5 # 2**x
-batch_size_max = 11 # 2**x
+batch_size_max = 13 # 2**x
 
 # Target accuracy
 target_acc = 0.97
@@ -33,10 +33,10 @@ epoch = 4000
 model_name = "MNIST_MLP" # ["MNIST_MLP"]
 
 # Optimizer
-optimizer_name = "SGD" # ["SGD", "Adam", "RMSprop"]
+optimizer_name = "Adam" # ["SGD", "Adam", "RMSprop"]
 
 # Learning rate
-lr = 0.1
+lr = 0.001
 
 # Momentum
 momentum = 0.0
@@ -48,7 +48,7 @@ dataset_name = "MNIST" # ["MNIST", "CIFAR10"]
 loss_fn_name = "CrossEntropyLoss" # ["CrossEntropyLoss", "NLLLoss"]
 
 # Device
-device_nb = 0
+device_nb = 1
 device = torch.device("cuda:"+str(device_nb) if torch.cuda.is_available() else "cpu")
 
 # Normal or hyperoptimization
@@ -71,6 +71,8 @@ if model_name == "MNIST_MLP":
 if not(hyperoptimization):
     if optimizer_name == "SGD":
         optimizer = torch.optim.SGD(model.parameters(), lr=lr, momentum=momentum)
+    if optimizer_name == "Adam":
+        optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
 # Initialize the loss function
 if loss_fn_name == "CrossEntropyLoss":
@@ -86,17 +88,22 @@ if dataset_name == "MNIST":
 
 # Train the model for different batch sizes
 mean_steps = [0] * len(batch_sizes)
+mean_times = [0] * len(batch_sizes)
 
 if hyperoptimization:
     for i in range(n_iter):
-        steps = training_hyperopt(model, train_dataset, valid_dataset, optimizer_name, lr, momentum, batch_sizes, target_acc, epoch, loss_fn, device)
+        steps, times = training_hyperopt(model, train_dataset, valid_dataset, optimizer_name, lr, momentum, batch_sizes, target_acc, epoch, loss_fn, device)
         mean_steps = [x + y for x, y in zip(mean_steps, steps)]
+        mean_times = [x + y for x, y in zip(mean_times, times)]
     mean_steps = [x / n_iter for x in mean_steps]
+    mean_times = [x / n_iter for x in mean_times]
 else:
     for i in range(n_iter):
-        steps = training(model, train_dataset, valid_dataset, optimizer, batch_sizes, target_acc, epoch, loss_fn, device)
+        steps, times = training(model, train_dataset, valid_dataset, optimizer, batch_sizes, target_acc, epoch, loss_fn, device)
         mean_steps = [x + y for x, y in zip(mean_steps, steps)]
+        mean_times = [x + y for x, y in zip(mean_times, times)]
     mean_steps = [x / n_iter for x in mean_steps]
+    mean_times = [x / n_iter for x in mean_times]
 
 # Save the results
 name_file = "results/" + model_name + "_" + optimizer_name + "_" + dataset_name + "_" + loss_fn_name + "_" + str(lr) + "_" + str(momentum) + "_" + str(hyperoptimization) +  "_" + str(batch_size_min) + "_" + str(batch_size_max) + "_" + str(target_acc)
@@ -108,5 +115,7 @@ for file in os.listdir("results/"):
 
 name_file += "_" + str(nb_file) + ".pkl"
 
+data = (mean_steps, mean_times)
+
 with open(name_file, 'wb') as f:
-    pickle.dump(mean_steps, f)
+    pickle.dump(data, f)

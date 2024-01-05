@@ -7,6 +7,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import copy
 from gradient_descent_the_ultimate_optimizer import gdtuo
+import time
 
 ######################################################################
 ############################ FUNCTIONS ###############################
@@ -33,6 +34,7 @@ def validation(model, data_loader, device):
 
 def training(model, train_dataset, test_dataset, optimizer, batch_sizes, target_acc, epoch, loss_fn, device):
     steps = []
+    times = []
     # Train the model for different batch sizes
     for batch_size in batch_sizes:
         train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
@@ -43,6 +45,7 @@ def training(model, train_dataset, test_dataset, optimizer, batch_sizes, target_
         N = len(train_loader.dataset)
         # Value to know if we must change the batch size
         new_batch = False
+        start = time.time()
         for i in range(epoch):
             if new_batch:
                 break
@@ -66,15 +69,17 @@ def training(model, train_dataset, test_dataset, optimizer, batch_sizes, target_
 
             accuracy = validation(model, test_loader, device)
             if accuracy >= target_acc:
+                end = time.time()
                 print("Target reached in {} steps".format((i+1)*N/batch_size))
                 steps.append(int((i+1)*N/batch_size))
+                times.append(end-start)
                 new_batch = True
                 break
 
             print('Train Epoch: {} \tLoss: {:.6f} \t Val ACC: {:.3f}'.format(
                 i, loss_epoch, accuracy))
 
-    return steps
+    return steps, times
 
 ######################################################################
 ################ FUNCTIONS FOR HYPER OPTIMISATION ####################
@@ -101,6 +106,7 @@ def validation_hyperopt(model, data_loader, device):
     
 def training_hyperopt(model, train_dataset, test_dataset, optimizer_name, lr, momentum, batch_sizes, target_acc, epoch, loss_fn, device, lr_hypopt=10e-5):
     steps = []
+    times = []
     # Train the model for different batch sizes
     for batch_size in batch_sizes:
         train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
@@ -110,11 +116,13 @@ def training_hyperopt(model, train_dataset, test_dataset, optimizer_name, lr, mo
         if optimizer_name == "SGD":
             if momentum==0.0:
                 optim = gdtuo.SGD(alpha = lr, optimizer=gdtuo.SGD(lr_hypopt))
+        if optimizer_name == "Adam":
+            optim = gdtuo.Adam(alpha=lr, optimizer=gdtuo.Adam(lr_hypopt))
         mw = gdtuo.ModuleWrapper(model, optimizer=optim)
         N = len(train_loader.dataset)
         # Value to know if we must change the batch size
         new_batch = False
-        #print(validation_hyperopt(mw, test_loader, device))
+        start = time.time()
         for i in range(epoch):
             mw.train()
 
@@ -141,12 +149,14 @@ def training_hyperopt(model, train_dataset, test_dataset, optimizer_name, lr, mo
 
             accuracy = validation_hyperopt(mw, test_loader, device)
             if accuracy >= target_acc:
+                end = time.time()
                 print("Target reached in {} steps".format((i+1)*N/batch_size))
                 steps.append(int((i+1)*N/batch_size))
+                times.append(end-start)
                 new_batch = True
                 break
 
             print('Train Epoch: {} \tLoss: {:.6f} \t Val ACC: {:.3f}'.format(
                 i, loss_epoch, accuracy))
 
-    return steps
+    return steps, times
