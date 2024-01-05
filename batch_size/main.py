@@ -24,19 +24,19 @@ batch_size_min = 5 # 2**x
 batch_size_max = 13 # 2**x
 
 # Target accuracy
-target_acc = 0.97
+target_acc = 0.988
 
 # Number of epochs
 epoch = 4000
 
 # Model
-model_name = "MNIST_MLP" # ["MNIST_MLP"]
+model_name = "SIMPLE_CNN" # ["MNIST_MLP", "SIMPLE_CNN"]
 
 # Optimizer
-optimizer_name = "Adam" # ["SGD", "Adam", "RMSprop"]
+optimizer_name = "SGD" # ["SGD", "Adam", "RMSprop"]
 
 # Learning rate
-lr = 0.001
+lr = 0.1
 
 # Momentum
 momentum = 0.0
@@ -48,7 +48,7 @@ dataset_name = "MNIST" # ["MNIST", "CIFAR10"]
 loss_fn_name = "CrossEntropyLoss" # ["CrossEntropyLoss", "NLLLoss"]
 
 # Device
-device_nb = 1
+device_nb = 2
 device = torch.device("cuda:"+str(device_nb) if torch.cuda.is_available() else "cpu")
 
 # Normal or hyperoptimization
@@ -65,6 +65,9 @@ batch_sizes = [2**x for x in range(batch_size_min, batch_size_max + 1)]
 # Initialize the model
 if model_name == "MNIST_MLP":
     model = MNIST_MLP(784, 128, 10)
+    model.to(device)
+if model_name == "SIMPLE_CNN":
+    model = SIMPLE_CNN(32, 64, 1024, 10)
     model.to(device)
 
 # Initialize the optimizer
@@ -83,7 +86,7 @@ if dataset_name == "MNIST":
     train_dataset = torchvision.datasets.MNIST(root='./data', train=True, download=True, transform=torchvision.transforms.ToTensor())
     test_dataset = torchvision.datasets.MNIST(root='./data', train=False, download=True, transform=torchvision.transforms.ToTensor())
     # Keep only n samples for the validation
-    n = 1024
+    n = 2048
     valid_dataset, _ = torch.utils.data.random_split(test_dataset, [n, len(test_dataset) - n])
 
 # Train the model for different batch sizes

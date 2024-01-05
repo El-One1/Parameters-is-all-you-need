@@ -38,7 +38,7 @@ def training(model, train_dataset, test_dataset, optimizer, batch_sizes, target_
     # Train the model for different batch sizes
     for batch_size in batch_sizes:
         train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-        test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=1024, shuffle=False)
+        test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=2048, shuffle=False)
         # Reset weights of the model
         model.reset_weights()
         model.train()
@@ -104,13 +104,13 @@ def validation_hyperopt(model, data_loader, device):
     
 ################# TRAINING #################
     
-def training_hyperopt(model, train_dataset, test_dataset, optimizer_name, lr, momentum, batch_sizes, target_acc, epoch, loss_fn, device, lr_hypopt=10e-5):
+def training_hyperopt(model, train_dataset, test_dataset, optimizer_name, lr, momentum, batch_sizes, target_acc, epoch, loss_fn, device, lr_hypopt=10e-6): #10e-5 (MLP) / generally lr/100
     steps = []
     times = []
     # Train the model for different batch sizes
     for batch_size in batch_sizes:
         train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-        test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=1024, shuffle=False)
+        test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=2048, shuffle=False)
         # Reset weights of the model
         model.reset_weights()
         if optimizer_name == "SGD":
