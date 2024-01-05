@@ -35,10 +35,10 @@ epoch = 4000
 model_name = "SIMPLE_CNN" # ["MNIST_MLP", "SIMPLE_CNN", "RESNET_18"]
 
 # Optimizer
-optimizer_name = "Adam" # ["SGD", "Adam", "RMSprop"]
+optimizer_name = "SGD" # ["SGD", "Adam", "RMSprop"]
 
 # Learning rate
-lr = 0.0001
+lr = 0.1
 
 # Momentum
 momentum = 0.0
@@ -50,14 +50,14 @@ dataset_name = "MNIST" # ["MNIST", "CIFAR10"]
 loss_fn_name = "CrossEntropyLoss" # ["CrossEntropyLoss", "NLLLoss"]
 
 # Device
-device_nb = 0
+device_nb = 1
 device = torch.device("cuda:"+str(device_nb) if torch.cuda.is_available() else "cpu")
 
 # Normal or hyperoptimization
 hyperoptimization = 1 # [0, 1]
 
 # Number of iterations
-n_iter = 3
+n_iter = 5
 
 ####################### MAIN #######################
 
@@ -137,7 +137,7 @@ else:
 # Save the results
 name_file = "results/" + model_name + "_" + optimizer_name + "_" + dataset_name + "_" + loss_fn_name + "_" + str(lr) + "_" + str(momentum) + "_" + str(hyperoptimization) +  "_" + str(batch_size_min) + "_" + str(batch_size_max) + "_" + str(target_acc)
 
-nb_file = 0
+nb_file = 1
 for file in os.listdir("results/"):
     if name_file in file:
         nb_file += 1
