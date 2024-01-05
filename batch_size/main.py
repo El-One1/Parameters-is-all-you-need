@@ -35,10 +35,10 @@ epoch = 4000
 model_name = "SIMPLE_CNN" # ["MNIST_MLP", "SIMPLE_CNN", "RESNET_18"]
 
 # Optimizer
-optimizer_name = "SGD" # ["SGD", "Adam", "RMSprop"]
+optimizer_name = "Adam" # ["SGD", "Adam", "RMSprop"]
 
 # Learning rate
-lr = 0.1
+lr = 0.0001
 
 # Momentum
 momentum = 0.0
@@ -57,7 +57,7 @@ device = torch.device("cuda:"+str(device_nb) if torch.cuda.is_available() else "
 hyperoptimization = 1 # [0, 1]
 
 # Number of iterations
-n_iter = 5
+n_iter = 3
 
 ####################### MAIN #######################
 
