@@ -7,6 +7,8 @@ import torch
 import torchvision
 import torch.nn as nn
 import torch.nn.functional as F
+import torchvision.models as models
+
 
 ######################################################################
 ############################# MODELS #################################
@@ -79,3 +81,19 @@ class SIMPLE_CNN(nn.Module):
         out = self.fc2(x)
         
         return out
+    
+# ResNet-18
+class RESNET18(nn.Module):
+    def __init__(self):
+        super(RESNET18, self).__init__()
+
+        # Charger ResNet-18 pré-entraîné sur ImageNet
+        self.resnet18 = models.resnet18(pretrained=False)
+
+    def reset_weights(self):
+        for layer in self.resnet18.children():
+            if hasattr(layer, 'reset_parameters'):
+                layer.reset_parameters()
+
+    def forward(self, x):
+        return self.resnet18(x)
