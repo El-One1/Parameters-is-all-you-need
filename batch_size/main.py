@@ -23,16 +23,16 @@ from models import *
 
 # Batch sizes
 batch_size_min = 5 # 2**x
-batch_size_max = 12 # 2**x
+batch_size_max = 11 # 2**x
 
 # Target accuracy
-target_acc = 0.988
+target_acc = 0.97
 
 # Number of epochs
 epoch = 4000
 
 # Model
-model_name = "SIMPLE_CNN" # ["MNIST_MLP", "SIMPLE_CNN", "RESNET_18"]
+model_name = "MNIST_MLP" # ["MNIST_MLP", "SIMPLE_CNN", "RESNET_18"]
 
 # Optimizer
 optimizer_name = "SGD" # ["SGD", "Adam", "RMSprop"]
@@ -57,7 +57,7 @@ device = torch.device("cuda:"+str(device_nb) if torch.cuda.is_available() else "
 hyperoptimization = 1 # [0, 1]
 
 # Number of iterations
-n_iter = 5
+n_iter = 10
 
 ####################### MAIN #######################
 
@@ -111,7 +111,7 @@ if dataset_name == "CIFAR10":
 
     test_dataset = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=transform_test)
 
-    n = 2048
+    n = 1024
     valid_dataset, _ = torch.utils.data.random_split(test_dataset, [n, len(test_dataset) - n])
 
 
@@ -137,7 +137,7 @@ else:
 # Save the results
 name_file = "results/" + model_name + "_" + optimizer_name + "_" + dataset_name + "_" + loss_fn_name + "_" + str(lr) + "_" + str(momentum) + "_" + str(hyperoptimization) +  "_" + str(batch_size_min) + "_" + str(batch_size_max) + "_" + str(target_acc)
 
-nb_file = 0
+nb_file = 1
 for file in os.listdir("results/"):
     if name_file in file:
         nb_file += 1
