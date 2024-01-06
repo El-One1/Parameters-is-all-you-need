@@ -137,7 +137,7 @@ else:
 # Save the results
 name_file = "results/" + model_name + "_" + optimizer_name + "_" + dataset_name + "_" + loss_fn_name + "_" + str(lr) + "_" + str(momentum) + "_" + str(hyperoptimization) +  "_" + str(batch_size_min) + "_" + str(batch_size_max) + "_" + str(target_acc)
 
-nb_file = 1
+nb_file = 0
 for file in os.listdir("results/"):
     if name_file in file:
         nb_file += 1
