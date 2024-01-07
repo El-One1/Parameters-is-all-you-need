@@ -104,7 +104,7 @@ def validation_hyperopt(model, data_loader, device):
     
 ################# TRAINING #################
     
-def training_hyperopt(model, train_dataset, test_dataset, optimizer_name, lr, momentum, batch_sizes, target_acc, epoch, loss_fn, device, lr_hypopt=10e-5): #10e-5 (MLP) / generally lr/100 (10e-6 SIMPLE_CNN)
+def training_hyperopt(model, train_dataset, test_dataset, optimizer_name, lr, momentum, batch_sizes, target_acc, epoch, loss_fn, device, lr_hypopt=10e-7): #10e-5 (MLP) / generally lr/100 (10e-6 SIMPLE_CNN)
     steps = []
     times = []
     # Train the model for different batch sizes
