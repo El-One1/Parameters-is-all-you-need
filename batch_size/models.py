@@ -7,6 +7,8 @@ import torch
 import torchvision
 import torch.nn as nn
 import torch.nn.functional as F
+import torchvision.models as models
+
 
 ######################################################################
 ############################# MODELS #################################
@@ -38,3 +40,60 @@ class MNIST_MLP(nn.Module):
         x = torch.tanh(x)
         x = F.log_softmax(x, dim=1)
         return x
+
+# SIMPLE CNN
+
+class SIMPLE_CNN(nn.Module):
+    def __init__(self):
+        super(SIMPLE_CNN, self).__init__()
+        
+        # Première couche de convolution (adaptée pour une seule chaîne d'entrée)
+        self.conv1 = nn.Conv2d(1, 32, kernel_size=5, stride=1, padding=2)  # 'same' padding
+        self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)
+        
+        # Deuxième couche de convolution
+        self.conv2 = nn.Conv2d(32, 64, kernel_size=5, stride=1, padding=2)  # 'same' padding
+        self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)
+        
+        # Couche complètement connectée
+        self.fc1 = nn.Linear(64 * 7 * 7, 1024)  # La taille de l'image MNIST est de 28x28 après deux poolings
+        self.fc2 = nn.Linear(1024, 10)  # Nombre de classes dans MNIST
+
+    def reset_weights(self):
+        for layer in self.children():
+            if hasattr(layer, 'reset_parameters'):
+                layer.reset_parameters()
+
+    def forward(self, x):
+        # Première couche de convolution
+        x = F.relu(self.conv1(x))
+        x = self.pool1(x)
+        
+        # Deuxième couche de convolution
+        x = F.relu(self.conv2(x))
+        x = self.pool2(x)
+        
+        # Aplatir avant la couche complètement connectée
+        x = x.view(-1, 64 * 7 * 7)
+        
+        # Couche complètement connectée
+        x = F.relu(self.fc1(x))
+        out = self.fc2(x)
+        
+        return out
+    
+# ResNet-18
+class RESNET18(nn.Module):
+    def __init__(self):
+        super(RESNET18, self).__init__()
+
+        # Charger ResNet-18 pré-entraîné sur ImageNet
+        self.resnet18 = models.resnet18(pretrained=False)
+
+    def reset_weights(self):
+        for layer in self.resnet18.children():
+            if hasattr(layer, 'reset_parameters'):
+                layer.reset_parameters()
+
+    def forward(self, x):
+        return self.resnet18(x)
