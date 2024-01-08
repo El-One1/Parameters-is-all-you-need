@@ -12,3 +12,7 @@ The second file, `stability.ipynb` contains the code to compare the training of 
 This folder contains the learnable activation functions tested on CIFAR-10 and Caltech-256. Learnable activation functions are activations where the parameters are learnt during training. In particular, we present AdaGELU, a learnable GELU, which outperforms GELU on both datasets. We also present AdaReLU in the same spirit to gain insight on learnable activations, though its performance were not particularly good.
 The folders also contain trials for Learnable polynoms and Fourier Series as activation functions but these did not show promising results. 
 
+## 4. Batch size:
+This folder contains all the files related to the batch size experiments. The models used for our experiments are in the models.py file. The functions.py file contains the functions used to train the models and to validate them. 
+To conduct the experiments, you can change the hyperparameters in the main.py file and run it. The results will be saved in the results folder. The plots.py file contains the code to plot the results.
+
