@@ -1,3 +1,8 @@
+Codebase for our paper [Deep Learning Frontiers: Hyper-Optimization and Learnable Parameters](https://github.com/El-One1/Parameters-is-all-you-need/blob/main/paper.pdf)
+
+Below is a short description of our contributions.
+
+
 ## 1. Adaptive skip connections : 
 In a typical skip connection, implemented as $y = f(x) + x$ (where f is typically going to be some convolutions and activations), the input $x$ and the convolution output $f(x)$ have the same weight. However, we wanted to try giving them learnable weights. The resulting output becomes $y = (1-\alpha)f(x) + \alpha*x$, where $\alpha = \sigma(w_s)$ and $w_s$ is a learnable weight. We had two goals in mind : to see whether this new parameter would improve training performance, and to see whether the evolution of the "skip weight" $w_s$ teaches us anything interesting about skip connections. For example, whether skip connection closer to the first layer have lower weights since it becomes less and less crucial that they pass gradients during the backward pass.
 
